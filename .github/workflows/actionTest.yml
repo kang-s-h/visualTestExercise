@@ -11,13 +11,21 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
       
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       
-      - name: Install Playwright
-        run: npx playwright install --with-deps chromium
-      
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps
+        
       - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v2
         with:
