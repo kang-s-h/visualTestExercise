@@ -8,7 +8,6 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   
-  // webServer를 use 블록 밖으로 빼세요
   webServer: {
     command: 'npm run dev',
     url: 'http://localhost:3000',
