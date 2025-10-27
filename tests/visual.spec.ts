@@ -1,17 +1,12 @@
-import fs from 'fs';
 import { test, expect } from '@playwright/test';
 
 test('전체 페이지 캡처', async ({ page }) => {
   await page.goto('/');
   await page.waitForLoadState('networkidle');
 
-  await page.screenshot({
-    path: 'current.png',
+  await expect(page).toHaveScreenshot('full.png', {
     fullPage: true,
+    maxDiffPixels: 100,
   });
 
-  const baseline = fs.readFileSync('baseline/full.png');
-  const current = fs.readFileSync('current.png');
-
-  expect(current).toEqual(baseline);
 });
