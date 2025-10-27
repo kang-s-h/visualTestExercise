@@ -35,8 +35,8 @@ jobs:
       
       - name: Download baseline from S3
         run: |
-          mkdir -p baseline
-          aws s3 cp s3://front-snapshot-test/full.png baseline/full.png
+          mkdir -p tests/visual.spec.ts-snapshots
+          aws s3 cp s3://front-snapshot-test/full.png tests/visual.spec.ts-snapshots/full.png
       
       - name: Start app
         run: npm run dev &
