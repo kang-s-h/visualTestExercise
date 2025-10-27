@@ -6,7 +6,7 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
 
 jobs:
@@ -66,13 +66,18 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
-      - name: Upload test results
-        if: failure()
-        uses: actions/upload-artifact@v4
+      - name: Deploy Playwright Report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          name: test-results
-          path: test-results/
-          retention-days: 30
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # gh-pages 브랜치에 'playwright-reports/[커밋 SHA]' 경로로 배포
+          publish_dir: ./playwright-report
+          destination_dir: playwright-reports/${{ github.sha }} 
+          # 기존 파일을 덮어쓰거나 지우지 않고 새 폴더만 추가
+          keep_files: true 
+          # 배포 후 커밋 메시지
+          commit_message: "Deploy Playwright Report for ${{ github.sha }}"
 
       - name: Comment on PR
         if: github.event_name == 'pull_request' && always()
@@ -82,11 +87,18 @@ jobs:
             const testPassed = '${{ steps.test.outcome }}' === 'success';
             const status = testPassed ? '✅ Tests passed' : '❌ Tests failed';
             
+            const owner = context.repo.owner.toLowerCase();
+            const repoName = context.repo.repo;
+            const sha = context.sha;
+            
+            const reportBaseUrl = `https://${owner}.github.io/${repoName}`;
+            const reportUrl = `${reportBaseUrl}/playwright-reports/${sha}/index.html`;
+
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `${status} - [View Report](${context.payload.repository.html_url}/actions/runs/${context.runId})`
+              body: `${status}\n\n[Playwright Report](${reportUrl}) (Test 실행 커밋: ${sha.substring(0, 7)})`
             });
       
       - name: Check test result
