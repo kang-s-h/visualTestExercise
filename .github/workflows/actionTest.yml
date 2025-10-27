@@ -1,5 +1,9 @@
 name: Visual Test
-on: [push]
+on: 
+  push:
+    branches:
+      - main
+  pull_request:
 
 permissions:
   contents: read
@@ -71,14 +75,14 @@ jobs:
           retention-days: 30
 
       - name: Comment on PR
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && always()
         uses: actions/github-script@v6
         with:
           script: |
             const testPassed = '${{ steps.test.outcome }}' === 'success';
             const status = testPassed ? '✅ Tests passed' : '❌ Tests failed';
             
-            github.rest.issues.createComment({
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
