@@ -42,7 +42,7 @@ jobs:
         run: npm run dev &
       
       - name: Wait for app
-        run: npx wait-on http://localhost:3000
+        run: npx wait-on http://localhost:5173
       
       - name: Run test
         run: npx playwright test
