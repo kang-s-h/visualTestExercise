@@ -39,7 +39,7 @@ jobs:
           aws s3 cp s3://front-snapshot-test/full.png baseline/full.png
       
       - name: Start app
-        run: npm start &
+        run: npm run dev &
       
       - name: Wait for app
         run: npx wait-on http://localhost:3000
