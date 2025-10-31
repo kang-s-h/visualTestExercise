@@ -10,4 +10,24 @@ test('전체 페이지 캡처', async ({ page }) => {
   });
 
 });
+test('전d', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  await expect(page).toHaveScreenshot('shop.png', {
+    fullPage: true,
+    maxDiffPixels: 100,
+  });
+
+});
+test('a', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  await expect(page).toHaveScreenshot('order.png', {
+    fullPage: true,
+    maxDiffPixels: 100,
+  });
+
+});
 //aaaaa
