@@ -7,7 +7,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
-  
+  snapshotPathTemplate: '{testDir}/{testFileDir}/{arg}{ext}',
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
