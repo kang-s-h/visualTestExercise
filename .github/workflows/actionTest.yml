@@ -44,7 +44,7 @@ jobs:
       
       - name: Download baseline from S3
         run: |
-          mkdir -p tests/snapshots
+          mkdir -p tests/visual.spec.ts-snapshots
           aws s3 sync s3://front-snapshot-test/ tests/visual.spec.ts-snapshots/ --exclude "*" --include "*.png"
       
       - name: Start app
