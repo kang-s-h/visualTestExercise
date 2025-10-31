@@ -43,9 +43,10 @@ jobs:
           aws-region: ap-northeast-2
       
       - name: Download baseline from S3
+        if: github.ref != 'refs/heads/main' || github.event_name != 'push'
         run: |
-          mkdir -p tests/visual.spec.ts-snapshots
-          aws s3 cp s3://front-snapshot-test/full-chromium-linux.png tests/visual.spec.ts-snapshots/full-chromium-linux.png
+          mkdir -p tests/snapshots
+          aws s3 sync s3://front-snapshot-test/ tests/snapshots/ --exclude "*" --include "*.png"
       
       - name: Start app
         run: npm run dev &
@@ -61,7 +62,7 @@ jobs:
       - name: Upload new baseline to S3
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
-          aws s3 cp tests/visual.spec.ts-snapshots/full-chromium-linux.png s3://front-snapshot-test/full-chromium-linux.png
+          aws s3 sync tests/snapshots/ s3://front-snapshot-test/ --exclude "*" --include "*.png"
 
       - name: Upload Playwright Report
         if: always()
