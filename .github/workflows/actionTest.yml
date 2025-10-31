@@ -58,6 +58,11 @@ jobs:
         continue-on-error: true
         run: npm test
 
+      - name: Upload new baseline to S3
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          aws s3 cp tests/visual.spec.ts-snapshots/full-chromium-linux.png s3://front-snapshot-test/full-chromium-linux.png
+
       - name: Upload Playwright Report
         if: always()
         uses: actions/upload-artifact@v4
@@ -87,7 +92,7 @@ jobs:
             const testPassed = '${{ steps.test.outcome }}' === 'success';
             const status = testPassed ? '✅ Tests passed' : '❌ Tests failed';
             
-            const owner = context.repo.owner.toLowerCase();
+            const owner = context.repo.owner;
             const repoName = context.repo.repo;
             const sha = context.sha;
             
