@@ -90,7 +90,7 @@ jobs:
         with:
           script: |
             const testPassed = '${{ steps.test.outcome }}' === 'success';
-            const status = testPassed ? '✅ Tests passed' : '❌ Tests failed';
+            const status = testPassed ? '✅ Visual Tests passed' : '❌ Visual Tests failed';
             
             const owner = context.repo.owner;
             const repoName = context.repo.repo;
