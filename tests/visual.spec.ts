@@ -14,6 +14,8 @@ test('전d', async ({ page }) => {
   await page.goto('/');
   await page.waitForLoadState('networkidle');
 
+  await page.getByRole('button').click();
+
   await expect(page).toHaveScreenshot('shop.png', {
     fullPage: true,
     maxDiffPixels: 100,
