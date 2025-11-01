@@ -1,9 +1,10 @@
 name: Visual Test
-on: 
+
+on:
   push:
-    branches:
-      - main
+    branches: ['main', 'develop']
   pull_request:
+    branches: ['main', 'develop']
 
 permissions:
   contents: write
@@ -11,29 +12,30 @@ permissions:
 
 jobs:
   test:
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Setup Node
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v3
-        id: playwright-cache
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+          node-version: lts/*
       
+      # - name: Install dependencies
+      #   run: npm install -g pnpm && pnpm install
       - name: Install dependencies
         run: npm ci
+
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
       
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install chromium
+        run: pnpm exec playwright install chromium --with-deps
 
       - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v2
@@ -76,12 +78,9 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          # gh-pages 브랜치에 'playwright-reports/[커밋 SHA]' 경로로 배포
           publish_dir: ./playwright-report
           destination_dir: playwright-reports/${{ github.sha }} 
-          # 기존 파일을 덮어쓰거나 지우지 않고 새 폴더만 추가
           keep_files: true 
-          # 배포 후 커밋 메시지
           commit_message: "Deploy Playwright Report for ${{ github.sha }}"
 
       - name: Comment on PR
