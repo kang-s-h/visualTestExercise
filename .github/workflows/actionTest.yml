@@ -60,6 +60,15 @@ jobs:
         continue-on-error: true
         run: npm test
 
+      - name: Update snapshots on failure
+        if: steps.test.outcome == 'failure'
+        run: |
+          echo "=== Test failed, updating snapshots ==="
+          npx playwright test --update-snapshots
+    
+          # 변경사항 확인
+          git diff tests/visual.spec.ts-snapshots/
+
       - name: Upload new baseline to S3
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
