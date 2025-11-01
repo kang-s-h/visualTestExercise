@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 test('전체 페이지 캡처', async ({ page }) => {
   await page.goto('/');
   await page.waitForLoadState('networkidle');
+  await page.getByRole('button').click();
 
   await expect(page).toHaveScreenshot('full.png', {
     fullPage: true,
@@ -15,6 +16,7 @@ test('전d', async ({ page }) => {
   await page.waitForLoadState('networkidle');
 
   await page.getByRole('button').click();
+  await page.getByRole('button').click();
 
   await expect(page).toHaveScreenshot('shop.png', {
     fullPage: true,
@@ -25,6 +27,7 @@ test('전d', async ({ page }) => {
 test('a', async ({ page }) => {
   await page.goto('/');
   await page.waitForLoadState('networkidle');
+  await page.getByRole('button').click();
 
   await expect(page).toHaveScreenshot('order.png', {
     fullPage: true,
